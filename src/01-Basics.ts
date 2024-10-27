@@ -1,6 +1,6 @@
 // types vs interfaces
 // minimum contract
-// union types and distribution
+// union types
 // index signatures
 // function signatures
 // overloads
@@ -10,130 +10,47 @@
 // const generics
 // generic constraints
 // Exhaustivity checking using never
+// Union distributivity
 // Type guards
 
 
-
-//#region Type Aliases
-
+//#region Types vs Interfaces
 interface Person {
     name: string;
     age: number;
 }
+//#endregion
 
-type PersonTypeRef = {
-    name: string;
-    age: number;
+
+//#region Classes are not type constraints - TS just derives an in-memory type from the class's shape
+class MyClass {
+    constructor(public someValue: string) { }
+    specialBehaviour(anotherValue: string) {
+        this.someValue += " " + anotherValue;
+    }
+}
+function someFunctionTakingAClass(myClass: MyClass) {
+    myClass.specialBehaviour("world"); // Assuming a certain behaviour because of the class parameter type
+}
+
+//#region Proof
+const myValue = {
+    someValue: "Hello",
+    specialBehaviour: () => { },
 };
-
+someFunctionTakingAClass(myValue) // If it fits, it's allowed.
+//#endregion
 //#endregion
 
-//#region Structural Typing
 
-// In structural typing, types are minimum contracts for the data that is being passed around
 
-//#region Bad:
-interface Person {
-    name: string;
-    age: number;
-}
-function sayHello_Bad(person: Person) {
-    return `Hello, ${person.name}`;
-}
 
-// Q: What's wrong with this approach?
 
-//#endregion
 
-//#region Good:
-function sayHello(greetable: { name: string }) {
-    return `Hello, ${greetable.name}`;
-}
-
-// A: Only expose the properties that the function requires to do its job
-
-//#region Usage:
-const ashley = {
-    name: "Ashley",
+//#region 'const' generics
+const myFunc = <T>(t: T): T => t;
+const result = myFunc({
+    name: "Jess",
     age: 30,
-};
-const ashleyGreeting = sayHello(ashley); // No error, because ashley has the required properties of Person
-
-const cat = {
-    name: "Whiskers",
-    favouriteFood: "Tuna",
-};
-const catGreeting = sayHello(cat); // No error, because cat has the required properties of Person
-//#endregion
-
-//#endregion
-
-//#endregion
-
-//#region Literals
-
-const one = 1;
-let two = 2;
-
-const name = "Jess"; // literal
-const jess = {
-    name: "Jess", // not a literal - why?
-};
-
-//#endregion
-
-//#region Union Types
-
-type Color = "red" | "blue" | "green";
-let color: Color = "red"; // only these values are allowed
-color = "blue";
-color = "baked beans"; // Error: Type '"baked beans"' is not assignable to type 'Color'.
-
-//#endregion
-
-//#region References
-
-// In JS, think of things as references as returning an anonymous or named value
-
-const someValue = {
-    name: "Blake",
-}; // Anonymous value, assigned to a reference
-
-const anotherValue = someValue; // Value from the reference is copied to another reference
-
-//#region What's the type of the anonymous value?
-type SomeValue = {
-    name: string;
-};
-// Prove it:
-const x: SomeValue = someValue;
-//#endregion
-
-//#region Parameterized references
-
-// Some references you can pass parameters to in order to get a different value
-
-const add = (a: number, b: number) => a + b;
-
-const yetAnotherValue = add;
-
-const a = yetAnotherValue;
-const b = yetAnotherValue(1, 2);
-
-//#region What's the type of this anonymous value?
-type Add = {
-    (a: number, b: number): number;
-};
-//#endregion
-
-function add2(a: number, b: number): number;
-function add2(a: string, b: string): string;
-function add2(a: any, b: any): any {
-    return a + b;
-}
-
-//#endregion
-
-//#region Isolate
-export const __nothing = "";
+});
 //#endregion
