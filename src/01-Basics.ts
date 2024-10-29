@@ -23,22 +23,46 @@ interface Person {
 
 
 //#region Classes are not type constraints - TS just derives an in-memory type from the class's shape
-class MyClass {
-    constructor(public someValue: string) { }
-    specialBehaviour(anotherValue: string) {
-        this.someValue += " " + anotherValue;
+function validateEmail(email: string) {
+    if (/^\S+@\S+\.\S+$/.test(email) === false) {
+        throw new Error("Invalid email");
     }
 }
-function someFunctionTakingAClass(myClass: MyClass) {
-    myClass.specialBehaviour("world"); // Assuming a certain behaviour because of the class parameter type
+class User {
+    constructor(public email: string) {
+        validateEmail(email);
+    }
+}
+function myFunctionAssumingEmailIsValidated(user: User) {
+    sns.sendEmail({
+        to: user.email,
+        subject: "Hello",
+        body: "World",
+    }); // Assuming a certain behaviour because of the class parameter type
 }
 
 //#region Proof
-const myValue = {
-    someValue: "Hello",
-    specialBehaviour: () => { },
-};
-someFunctionTakingAClass(myValue) // If it fits, it's allowed.
+myFunctionAssumingEmailIsValidated({
+    email: "nothing", //oh no :'(
+}) // Same shape as the class, so it's allowed
+
+//#region A better approach is using a branded type
+type Email = string & { __email: never };
+function createEmail(email: string): Email {
+    validateEmail(email);
+    return email as Email;
+}
+function myFunctionAssumingEmailIsValidated_v2(email: Email) {
+    // ...
+}
+const notAnEmail = "nothing";
+const anEmail = createEmail("bbeattiehood@atlassian.com");
+console.log(notAnEmail, anEmail); // prints: "nothing" "bbeattiehood@atlassian.com" because they're both still strings
+myFunctionAssumingEmailIsValidated_v2(notAnEmail); // Error: prevents unvalidated string
+myFunctionAssumingEmailIsValidated_v2(anEmail); // OK: because it's a validated string
+//#endregion
+
+
 //#endregion
 //#endregion
 
