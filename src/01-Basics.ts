@@ -4,14 +4,13 @@
 // index signatures
 // function signatures
 // overloads
-// classes are not types
+// classes are not types *
 // constructor signatures
 // satisfies
-// const generics
 // generic constraints
-// Exhaustivity checking using never
-// Union distributivity
-// Type guards
+// const generics *
+// Exhaustivity checking using never *
+// Type guards *
 
 
 //#region Types vs Interfaces
@@ -20,6 +19,11 @@ interface Person {
     age: number;
 }
 //#endregion
+
+
+
+
+
 
 
 //#region Classes are not type constraints - TS just derives an in-memory type from the class's shape
@@ -77,4 +81,31 @@ const result = myFunc({
     name: "Jess",
     age: 30,
 });
+//#endregion
+
+
+
+//#region Exhaustivity checking using never
+type Color = "red" | "green" | "blue";
+function toHex(color: Color): string {
+    switch (color) {
+        case "red": return "#ff0000";
+        case "green": return "#00ff00";
+        default: return "#0000ff";
+    }
+}
+//#endregion
+
+
+
+//#region Type guards
+function isColor(s: any): s is Color {
+    return s === "red" || s === "green" || s === "blue";
+}
+function toHex_v2(color: any): string {
+    if (isColor(color)) {
+        return toHex(color);
+    }
+    throw new Error("Invalid color parameter");
+}
 //#endregion
