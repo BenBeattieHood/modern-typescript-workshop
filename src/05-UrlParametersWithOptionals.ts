@@ -7,12 +7,19 @@ export type ParamsOf<Url extends string> = Extract<
 
 type Result = ParamsOf<"api/person/:personId/address/:addressId">;
 
+
+
+
+
 //#region Going further
 
 // What if we allowed optional parameters?
 
 type ResultWithOptionalParameters =
     ParamsOf<"api/person/:personId(/address/:addressId)">;
+
+
+// We're going to need some more tools to solve this:
 
 //#region Tool 1: We can return multiple fields from a conditional type
 
@@ -23,8 +30,9 @@ type FirstName = GetParts<"John Doe">["firstName"];
 type LastName = GetParts<"John Doe">["lastName"];
 type NotARealName = GetParts<"Strawberry">["firstName"];
 
-//#region With unions we can append UnionA | UnionB - but how do we concatenate nested fields?
+//#region Previously in UrlParameters we can concatenate UnionA | UnionB - but how do we concatenate _nested_ fields?
 
+// Use a helper type to concatenate the two objects
 type MergeParamSplits_v1<
     A extends {
         required: string;
@@ -39,7 +47,7 @@ type MergeParamSplits_v1<
     optional: A["optional"] | B["optional"];
 };
 
-//#region Apply that to our ParamsOf type
+//#region Use this helper type and the nested infer extraction tool in our refined ParamsOf type
 type ParamsWithOptionalOf_v1<Url extends string> =
     Url extends `${infer Head}(${infer HeadOptional})${infer Rest}`
     ? MergeParamSplits_v1<
@@ -92,10 +100,17 @@ type ResultWithOptional_v2_Example =
 
 //#region Use that parsed type within two separate Record types, which we can intersect (&), and assign to a shorthand new 'ParamsOfWithOptional' type that we can use
 //#region Example
+
+// Join a Record<RequiredKeys, Value> with a Partial<Record<OptionalKeys, Value>>
 type RequiredAndPartialRecord<
     T extends RequiredAndOptional_Example<string, string>,
     Value,
-> = Record<T["required"], Value> & Partial<Record<T["optional"], Value>>;
+> =
+    Record<T["required"], Value>
+    & Partial<Record<T["optional"], Value>>;
+
+
+
 type ParamsOfWithOptional<Url extends string> = RequiredAndPartialRecord<
     ParamsWithOptionalOf_v2_Example<Url>,
     string

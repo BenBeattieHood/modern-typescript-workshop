@@ -11,6 +11,8 @@
 // const generics *
 // Exhaustivity checking using never *
 // Type guards *
+// conditional types *
+// distributivity *
 
 
 //#region Types vs Interfaces
@@ -108,4 +110,24 @@ function toHex_v2(color: any): string {
     }
     throw new Error("Invalid color parameter");
 }
+//#endregion
+
+
+//#region Conditional types
+type HexOf<C extends Color> =
+    C extends "red" ? "#ff0000"
+    : C extends "green" ? "#00ff00"
+    : "#0000ff";
+function toHex_v3<C extends Color>(color: C): HexOf<C> {
+    //#region Code
+    return toHex(color) as any;
+    //#endregion
+}
+const redHex = toHex_v3("red");
+//#endregion
+
+
+
+//#region Distributivity
+type Hex = HexOf<Color>;
 //#endregion

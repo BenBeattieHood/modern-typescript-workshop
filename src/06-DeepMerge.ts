@@ -65,6 +65,9 @@ const result: {
 }
 */
 
+
+
+
 //#region First, let's merge two records
 //#region Example
 type AnyRecord_Example = Record<keyof any, unknown>;
@@ -74,18 +77,18 @@ type DeepMergeTwoRecords_Example<
     B extends AnyRecord_Example,
 > = [A, B] extends [Record<infer AKey, unknown>, Record<infer BKey, unknown>]
     ? {
-          [K in AKey | BKey]: K extends AKey
-              ? K extends BKey
-                  ? A[K] extends AnyRecord_Example
-                      ? B[K] extends AnyRecord_Example
-                          ? DeepMergeTwoRecords_Example<A[K], B[K]>
-                          : B[K]
-                      : B[K]
-                  : A[K]
-              : K extends BKey
-                ? B[K]
-                : never;
-      }
+        [K in AKey | BKey]: K extends AKey
+        ? K extends BKey
+        ? A[K] extends AnyRecord_Example
+        ? B[K] extends AnyRecord_Example
+        ? DeepMergeTwoRecords_Example<A[K], B[K]>
+        : B[K]
+        : B[K]
+        : A[K]
+        : K extends BKey
+        ? B[K]
+        : never;
+    }
     : never;
 //#endregion
 
@@ -95,7 +98,7 @@ const deepMergeTwoRecords = <
 >(
     a: A,
     b: B,
-): DeepMergeTwoRecords<A, B> => {};
+): DeepMergeTwoRecords<A, B> => { };
 
 const testOfMergingTwoRecords = deepMergeTwoRecords(
     {
@@ -111,33 +114,36 @@ const testOfMergingTwoRecords = deepMergeTwoRecords(
     },
 );
 
+
+
+
 //#region Now, let's merge N records
 //#region Example
 export type DeepMergeMultipleRecords<Records extends AnyRecord_Example[]> =
     Records extends []
-        ? never
-        : Records extends [infer A extends AnyRecord_Example]
-          ? A
-          : Records extends [
-                  infer A extends AnyRecord_Example,
-                  infer B extends AnyRecord_Example,
-              ]
-            ? DeepMergeTwoRecords_Example<A, B>
-            : Records extends [
-                    infer A extends AnyRecord_Example,
-                    infer B extends AnyRecord_Example,
-                    ...infer Rest extends AnyRecord_Example[],
-                ]
-              ? DeepMergeTwoRecords_Example<
-                    A,
-                    DeepMergeMultipleRecords<[B, ...Rest]>
-                >
-              : never;
+    ? never
+    : Records extends [infer A extends AnyRecord_Example]
+    ? A
+    : Records extends [
+        infer A extends AnyRecord_Example,
+        infer B extends AnyRecord_Example,
+    ]
+    ? DeepMergeTwoRecords_Example<A, B>
+    : Records extends [
+        infer A extends AnyRecord_Example,
+        infer B extends AnyRecord_Example,
+        ...infer Rest extends AnyRecord_Example[],
+    ]
+    ? DeepMergeTwoRecords_Example<
+        A,
+        DeepMergeMultipleRecords<[B, ...Rest]>
+    >
+    : never;
 //#endregion
 
 const deepMergeRecords = <const Records extends AnyRecord_Example[]>(
     ...args: Records
-): DeepMergeMultipleRecords<Records> => {};
+): DeepMergeMultipleRecords<Records> => { };
 
 const testOfMergingMultipleRecords = deepMergeRecords(
     {
