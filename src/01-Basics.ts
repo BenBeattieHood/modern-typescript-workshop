@@ -1,11 +1,11 @@
-// types vs interfaces
+// We'll cover:
+// types vs interfaces *
 // minimum contract
-// union types
+// union types and intersection types
 // index signatures
 // function signatures
 // overloads
 // classes are not types *
-// constructor signatures
 // satisfies
 // generic constraints
 // const generics *
@@ -129,5 +129,22 @@ const redHex = toHex_v3("red");
 
 
 //#region Distributivity
+
 type Hex = HexOf<Color>;
 //#endregion
+
+
+
+
+
+
+/* Intro to next sections:
+Next we'll go through more advanced examples, moving through piece by piece so you will see what's 
+going on. But they're just to show you how to use the types. And in doing this I'm going to show 
+you a set of tools in code, that help you construct types- that make things easier to do more 
+complex things.
+
+What I want out of this is that next time you're thinking of setting a parameter's type as 
+'any' or 'record', you perhaps give one of the following techniques or tools we use here a try 
+first, and see if you can make the type be a bit tighter.
+*/

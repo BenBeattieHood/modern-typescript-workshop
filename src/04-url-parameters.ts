@@ -12,7 +12,7 @@ export function interpolateUrl<Url extends string>(
 
 
 
-// Exercise: Implement the interpolateUrl function's 'parameters' argument's type
+//#region Exercise: Implement the interpolateUrl function's 'parameters' argument's type
 
 
 
@@ -30,8 +30,15 @@ type Result_v1_Example =
     SplitUrl_v1_Example<"api/person/:personId/address/:addressId">;
 //#endregion
 
-// type SplitUrl<Url extends string> =
-//     Url extends `${infer Head}/${infer Rest}`
+
+
+
+
+
+
+
+
+
 
 //#region Tool 2: Remember, 'never's are removed from unions - and we can remove these using the 'Exclude' utility type (see inside the utility type to see how it works)
 type ExampleWithoutBoolean = Exclude<number | string | boolean | Date, boolean>; // string | boolean
@@ -48,7 +55,14 @@ type Result_v3_Example = ExtractParams<
 //#endregion
 
 // Now we can use the keys returned to create a Record type
-//#endregion
+
+
+
+
+
+
+
+
 
 
 
@@ -61,5 +75,12 @@ function interpolateUrl_TypeSafe<Url extends string>(
 
 interpolateUrl_TypeSafe("api/person/:personId/address/:addressId", {
 },);
+
+//#endregion
+//#endregion
+
+
+//#endregion
+
 
 //#endregion

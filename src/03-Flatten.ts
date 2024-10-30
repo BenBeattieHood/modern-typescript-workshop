@@ -23,7 +23,7 @@ const exercise_flattenedArray = flatten_exercise([1, 2, [3, [4], 5], 6]);
 
 
 
-// Exercise: Implement the Flatten<T> type
+//#region Exercise: Implement the Flatten<T> type
 
 
 
@@ -42,6 +42,9 @@ type Flatten_v0<T extends unknown[]> =
     : T; // T is an empty array, so just return it as-is
 
 
+
+
+
 //#region Tool 1: How do we infer the type of the first item?
 
 //#region Example
@@ -50,6 +53,8 @@ type Flatten_v0<T extends unknown[]> =
 //         ? // Do something
 //         : [];
 //#endregion
+
+
 
 //#region Tool 2: Recursion in tuples (pronounced: 'tuh-ples')
 
@@ -85,6 +90,7 @@ function flatten<const T extends unknown[]>(values: T): Flatten<T> {
     return values as any;
     //#endregion
 }
+const flattenedArray = flatten([1, 2, [3, [4], 5], 6]);
 
 
 
@@ -95,3 +101,6 @@ function flatten<const T extends unknown[]>(values: T): Flatten<T> {
 
 //#endregion
 //#endregion
+
+
+
