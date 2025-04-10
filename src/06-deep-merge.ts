@@ -72,24 +72,19 @@ const result: {
 //#region Example
 type AnyRecord_Example = Record<keyof any, unknown>;
 
-type DeepMergeTwoRecords_Example<
-    A extends AnyRecord_Example,
-    B extends AnyRecord_Example,
-> = [A, B] extends [Record<infer AKey, unknown>, Record<infer BKey, unknown>]
-    ? {
-        [K in AKey | BKey]: K extends AKey
-        ? K extends BKey
-        ? A[K] extends AnyRecord_Example
-        ? B[K] extends AnyRecord_Example
-        ? DeepMergeTwoRecords_Example<A[K], B[K]>
-        : B[K]
-        : B[K]
-        : A[K]
-        : K extends BKey
+export type DeepMergeTwoRecords_Example<A extends AnyRecord, B extends AnyRecord> = {
+    [K in keyof A | keyof B]: K extends keyof A
+        ? K extends keyof B
+            ? A[K] extends AnyRecord
+                ? B[K] extends AnyRecord
+                    ? DeepMergeTwoRecords_Example<A[K], B[K]>
+                    : B[K]
+                : B[K]
+            : A[K]
+        : K extends keyof B
         ? B[K]
         : never;
-    }
-    : never;
+};;
 //#endregion
 
 const deepMergeTwoRecords = <
